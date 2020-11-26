@@ -1,0 +1,51 @@
+﻿body {
+    font-family: Arial;
+    background-color: blue;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: auto;
+    margin:auto;
+}
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.button4 {
+    border-radius: 14px;
+}
+
+.textbox {
+    height: 50px;
+    padding: 0 10px;
+    border: none;
+    background: Orange;
+    background: Orange;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+    font-family: 'Montserrat', sans-serif;
+    text-indent: 10px;
+    color: blue;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    font-size: 20px;
+    width: 470px;
+}
+
+    .textbox:focus {
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(255, 255, 255, 0.15);
+        outline: none;
+        background: Orange;
+        background: Orange;
+        outline: solid 1px yellow;
+    }

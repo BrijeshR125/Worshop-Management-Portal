@@ -1,0 +1,6 @@
+G:\BRIJESH\Projects\RealTimeProject\BOL\BOL\bin\Debug\BOL.dll
+G:\BRIJESH\Projects\RealTimeProject\BOL\BOL\bin\Debug\BOL.pdb
+G:\BRIJESH\Projects\RealTimeProject\BOL\BOL\obj\Debug\BOL.csproj.CoreCompileInputs.cache
+G:\BRIJESH\Projects\RealTimeProject\BOL\BOL\obj\Debug\BOL.dll
+G:\BRIJESH\Projects\RealTimeProject\BOL\BOL\obj\Debug\BOL.pdb
+G:\BRIJESH\Projects\RealTimeProject\BOL\BOL\obj\Debug\BOL.csprojAssemblyReference.cache

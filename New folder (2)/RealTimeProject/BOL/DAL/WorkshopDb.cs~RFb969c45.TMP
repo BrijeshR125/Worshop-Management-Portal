@@ -1,0 +1,240 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BOL;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace DAL
+{
+    public class WorkshopDb:DALBase
+    {
+        #region Get
+        public List<tbl_Workshop> GetWorkshops()
+        {
+            List<tbl_Workshop> Ls;
+            Ls = new List<tbl_Workshop>();
+
+            string cmdStr = "select * from tbl_Workshop";
+            SqlConnection con = new SqlConnection(conStr);
+            SqlCommand cmd = new SqlCommand(cmdStr, con);
+            con.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                tbl_Workshop Wp = new tbl_Workshop();
+                Wp.WorkshopId = int.Parse(dr["WorkshopId"].ToString());
+                Wp.WorkshopTitle = dr["WorkshopTitle"].ToString();
+                Wp.WorkshopDate = DateTime.Parse(dr["WorkshopDate"].ToString());
+                Wp.WorkshopDuration = dr["WorkshopDuration"].ToString();
+                Wp.WorkshopTopics = dr["WorkshopTopics"].ToString();
+
+                Ls.Add(Wp);
+            }
+            dr.Close();
+            con.Close();
+            return Ls;
+        }
+
+        public List<WorkshopRequest> GetWorkshopRequest()
+        {
+            List<WorkshopRequest> Ls;
+            Ls = new List<WorkshopRequest>();
+
+            string cmdStr = @"SELECT tbl_User.UserId,tbl_User.Username_Email,tbl_Workshop.WorkshopId,tbl_Workshop.WorkshopTitle,tbl_Student_Workshop_Mapping.isApproved FROM tbl_Student_Workshop_Mapping Left outer JOIN tbl_User ON tbl_User.UserId = tbl_Student_Workshop_Mapping.StudentId Left outer JOIN tbl_Workshop ON tbl_Student_Workshop_Mapping.WorkshopId = tbl_Workshop.WorkshopId";
+            SqlConnection con = new SqlConnection(conStr);
+            SqlCommand cmd = new SqlCommand(cmdStr, con);
+            con.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+            while(dr.Read())
+            {
+                WorkshopRequest WR = new WorkshopRequest();
+                WR.UserId = int.Parse(dr["UserId"].ToString());
+                WR.Username_Email = dr["Username_Email"].ToString();
+                WR.WorkshopId = int.Parse(dr["WorkshopId"].ToString());
+                WR.WorkshopTitle = dr["WorkshopTitle"].ToString();
+                WR.isApproved = (dr["isApproved"].ToString() == "") ? false : bool.Parse(dr["isApproved"].ToString());
+                Ls.Add(WR);
+            }
+            dr.Close();
+            con.Close();
+            return Ls;
+        }
+        public tbl_Workshop GetWorkshopById(int WorkshopId)
+        {
+            tbl_Workshop Wp = null;
+            string cmdStr = "select * from tbl_Workshop where WorkshopId=@WorkshopId";
+            SqlConnection con = new SqlConnection(conStr);
+            SqlCommand cmd = new SqlCommand(cmdStr, con);
+            cmd.Parameters.AddWithValue("@WorkshopId", WorkshopId);
+            con.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+            if (dr.Read())
+            {
+                Wp = new tbl_Workshop();
+                Wp.WorkshopId = int.Parse(dr["WorkshopId"].ToString());
+                Wp.WorkshopTitle = dr["WorkshopTitle"].ToString();
+                Wp.WorkshopDate = DateTime.Parse(dr["WorkshopDate"].ToString());
+                Wp.WorkshopDuration = dr["WorkshopDuration"].ToString();
+                Wp.WorkshopTopics = dr["WorkshopTopics"].ToString();
+            }
+            dr.Close();
+            con.Close();
+            return Wp;
+        }
+        #endregion
+
+        #region Post
+        
+        #region Insert
+        public bool InsertWorkshop(tbl_Workshop Wp, List<int> Ls)
+        {
+            SqlConnection con = new SqlConnection(conStr);
+
+            string cmdStr = @"insert into tbl_Workshop values(@WorkshopTitle,@WorkshopDate,@WorkshopDuration,@WorkshopTopics,null,null,null,null) ;select Scope_Identity() as Id";
+
+            string cmdStr2 = "insert into tbl_Trainer_Workshop_Mapping values(@TrainerId,@WorkshopId,null,null,null,null)";
+
+            con.Open();
+            SqlTransaction sqlTrans = con.BeginTransaction();
+            try
+            {
+                //inserting workshop
+                SqlCommand cmd = new SqlCommand(cmdStr, con, sqlTrans);
+                cmd.Parameters.AddWithValue("@WorkshopTitle", Wp.WorkshopTitle);
+                cmd.Parameters.AddWithValue("@WorkshopDate", Wp.WorkshopDate);
+                cmd.Parameters.AddWithValue("@WorkshopDuration", Wp.WorkshopDuration);
+                cmd.Parameters.AddWithValue("@WorkshopTopics", Wp.WorkshopTopics);
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                //Reading WorkshopId returned from Scope_Identity
+                int WorkshopId = 0;
+                if (dr.Read())
+                {
+                    WorkshopId = int.Parse(dr[0].ToString());
+                }
+                dr.Close();
+
+                //inserting multiple records in tbl_Trainer_Workshop_Mapping with retrieved WorkshopId from Scope_Identity and TrainerIds from Ls
+                if (WorkshopId != 0)
+                {
+                    foreach (var TrainerId in Ls)
+                    {
+                        SqlCommand cmd2 = new SqlCommand(cmdStr2, con, sqlTrans);
+                        cmd.Parameters.AddWithValue("@TrainerId", TrainerId);
+                        cmd.Parameters.AddWithValue("@WorkshopId", WorkshopId);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                //if everything is successful then commiting the transaction
+                sqlTrans.Commit();
+                con.Close();
+                return true;
+            }
+            catch
+            {
+                //if anything goes wrong then rolling back the transaction
+                sqlTrans.Rollback();
+                return false;
+            }
+        }
+
+        public bool AssignTrainersToWorkshop(List<tbl_Trainer_Workshop_Mapping> Ls)
+        {
+            SqlConnection con = new SqlConnection(conStr);
+            con.Open();
+            SqlTransaction SqlTrans = con.BeginTransaction();
+            try
+            {
+                foreach (var item in Ls)
+                {
+                    string cmdStr = "insert into tbl_Trainer_Workshop_Mapping values(@TrainerId,@WorkshopId,null,null,null,null)";
+                    SqlCommand cmd = new SqlCommand(cmdStr, con, SqlTrans);
+                    cmd.Parameters.AddWithValue("@TrainerId", item.TrainerId);
+                    cmd.Parameters.AddWithValue("@WorkshopId", item.WorkshopId);
+                    cmd.ExecuteNonQuery();
+                }
+                SqlTrans.Commit();
+                con.Close();
+                return true;
+            }
+            catch
+            {
+                SqlTrans.Rollback();
+                return false;
+            }
+        }
+        #endregion
+        
+        #region Update
+        public bool UpdateWorkshopById(tbl_Workshop Wp, int WorkshopId)
+        {
+            try
+            {
+                string cmdStr = @"Update tbl_Workshop Set WorkshopTitle=@WorkshopTitle,WorkshopDate=@WorkshopDate,WorkshopDuration=@WorkshopDuration,WorkshopTopics=@WorkshopTopics where WorkshopId=@WorkshopId";
+                SqlConnection con = new SqlConnection(conStr);
+                SqlCommand cmd = new SqlCommand(cmdStr, con);
+                cmd.Parameters.AddWithValue("@WorkshopTitle", Wp.WorkshopTitle);
+                cmd.Parameters.AddWithValue("@WorkshopDate", Wp.WorkshopDate);
+                cmd.Parameters.AddWithValue("@WorkshopDuration", Wp.WorkshopDuration);
+                cmd.Parameters.AddWithValue("@WorkshopTopics", Wp.WorkshopTopics);
+                cmd.Parameters.AddWithValue("@WorkshopId", WorkshopId);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        public bool AppOrRejWorkshopRequest(tbl_Student_Workshop_Mapping swp)
+        {
+            try 
+            {
+                string cmdStr = @"Update tbl_Student_Workshop_Mapping Set isApproved=@isApproved where WorkshopId=@WorkshopId and StudentId=@StudentId";
+                SqlConnection con = new SqlConnection(conStr);
+                SqlCommand cmd = new SqlCommand(cmdStr, con);
+                cmd.Parameters.AddWithValue("@isApproved", swp.isApproved == true ? 1 : 0);
+                cmd.Parameters.AddWithValue("@WorkshopId", swp.WorkshopId);
+                cmd.Parameters.AddWithValue("@StudentId", swp.StudentId);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        #region Delete
+        public bool DeleteWorkshopById(int WorkshopId)
+        {
+            try
+            {
+                string cmdStr = @"Delete from tbl_Workshop where WorkshopId=@WorkshopId";
+                SqlConnection con = new SqlConnection(conStr);
+                SqlCommand cmd = new SqlCommand(cmdStr, con);
+                cmd.Parameters.AddWithValue("@WorkshopId", WorkshopId);
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #endregion
+    }
+}

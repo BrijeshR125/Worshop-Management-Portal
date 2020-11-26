@@ -1,0 +1,12 @@
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\bin\Debug\BLL.dll
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\bin\Debug\BLL.pdb
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\obj\Debug\BLL.csprojAssemblyReference.cache
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\obj\Debug\BLL.csproj.CoreCompileInputs.cache
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\obj\Debug\BLL.dll
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\obj\Debug\BLL.pdb
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\bin\Debug\BOL.dll
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\bin\Debug\BOL.pdb
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\obj\Debug\BLL.csproj.CopyComplete
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\bin\Debug\DAL.dll
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\bin\Debug\DAL.pdb
+G:\BRIJESH\Projects\RealTimeProject\BOL\BLL\bin\Debug\DAL.dll.config

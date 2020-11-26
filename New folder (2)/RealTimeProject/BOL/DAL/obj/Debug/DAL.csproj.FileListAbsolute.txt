@@ -1,0 +1,10 @@
+G:\BRIJESH\Projects\RealTimeProject\BOL\DAL\bin\Debug\DAL.dll
+G:\BRIJESH\Projects\RealTimeProject\BOL\DAL\bin\Debug\DAL.pdb
+G:\BRIJESH\Projects\RealTimeProject\BOL\DAL\bin\Debug\BOL.dll
+G:\BRIJESH\Projects\RealTimeProject\BOL\DAL\bin\Debug\BOL.pdb
+G:\BRIJESH\Projects\RealTimeProject\BOL\DAL\obj\Debug\DAL.csprojAssemblyReference.cache
+G:\BRIJESH\Projects\RealTimeProject\BOL\DAL\obj\Debug\DAL.csproj.CoreCompileInputs.cache
+G:\BRIJESH\Projects\RealTimeProject\BOL\DAL\obj\Debug\DAL.csproj.CopyComplete
+G:\BRIJESH\Projects\RealTimeProject\BOL\DAL\obj\Debug\DAL.dll
+G:\BRIJESH\Projects\RealTimeProject\BOL\DAL\obj\Debug\DAL.pdb
+G:\BRIJESH\Projects\RealTimeProject\BOL\DAL\bin\Debug\DAL.dll.config
